@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bali — Mini‑Guía + Itinerarios (22–29 nov)</title>
+  <style>
+    :root{
+      --bg:#0f172a;        /* slate-900 */
+      --panel:#111827;     /* gray-900 */
+      --card:#1f2937;      /* gray-800 */
+      --muted:#94a3b8;     /* slate-400 */
+      --accent:#14b8a6;    /* teal-500 */
+      --accent-2:#22d3ee;  /* cyan-400 */
+      --text:#e5e7eb;      /* gray-200 */
+      --ring:#334155;      /* slate-700 */
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;scroll-behavior:smooth;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    a{color:var(--accent)}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    header{position:sticky;top:0;z-index:50;background:rgba(15,23,42,.9);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--ring)}
+    .row{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{font-weight:700;letter-spacing:.3px}
+    .brand small{color:var(--muted);font-weight:500}
+
+    /* Hamburger */
+    .hamburger{display:inline-flex;flex-direction:column;gap:4px;padding:8px;border:1px solid var(--ring);border-radius:10px;background:transparent;color:var(--text)}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text)}
+    nav{position:fixed;inset:0 0 auto auto;width:min(320px,90%);height:100%;background:var(--panel);transform:translateX(100%);transition:transform .25s ease;box-shadow:-10px 0 30px rgba(0,0,0,.35)}
+    nav.open{transform:translateX(0)}
+    nav ul{list-style:none;margin:0;padding:20px}
+    nav li{margin:8px 0}
+    nav a{display:block;padding:12px 14px;border:1px solid transparent;border-radius:12px;color:var(--text);text-decoration:none}
+    nav a:hover{border-color:var(--ring);background:rgba(255,255,255,.03)}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:none}
+    .overlay.show{display:block}
+
+    section{padding:48px 0;border-bottom:1px dashed var(--ring)}
+    section h2{margin:0 0 12px;font-size:26px}
+    .sub{color:var(--muted);margin-bottom:20px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:900px){.grid.cols-2{grid-template-columns:1fr 1fr}.grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid var(--ring);border-radius:16px;padding:16px}
+    .badge{display:inline-block;background:rgba(20,184,166,.15);color:#67e8f9;border:1px solid rgba(34,211,238,.35);padding:4px 10px;border-radius:999px;font-size:12px;margin-right:6px}
+    .kpi{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 0}
+    .kpi .item{background:var(--card);border:1px solid var(--ring);padding:10px 12px;border-radius:12px}
+
+    /* Map */
+    #map{width:100%;height:480px;border:1px solid var(--ring);border-radius:16px}
+
+    .list{margin:0;padding-left:18px}
+    .list li{margin:6px 0}
+
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--ring);background:var(--card);color:var(--text);margin:4px 6px 0 0;font-size:12px}
+
+    .footer{text-align:center;color:var(--muted);padding:28px 0}
+      /* Mostrar una sola sección activa */
+    nav a.active{border-color:var(--accent);background:rgba(20,184,166,.15)}
+    main section{display:none}
+    main section.active{display:block}
+      /* Mostrar una sola sección activa */
+    nav a.active{border-color:var(--accent);background:rgba(20,184,166,.15)}
+    main section{display:none}
+    main section.active{display:block}
+
+    /* Alturas fijas para header + tabs */
+    :root{--header-h:56px;--tabs-h:48px}
+    header .row{min-height:var(--header-h)}
+
+    /* Tabs fijas */
+    .tabs-wrap{position:sticky;top:var(--header-h);z-index:40;background:rgba(15,23,42,.92);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--ring)}
+    .tabs{display:flex;gap:8px;overflow:auto;white-space:nowrap;padding:8px 16px}
+    .tab{display:inline-block;padding:10px 12px;border-radius:999px;border:1px solid var(--ring);color:var(--text);text-decoration:none}
+    .tab.active{border-color:var(--accent);background:rgba(20,184,166,.15)}
+
+    /* Mapa a pantalla casi completa (full-bleed) */
+    #mapa{padding:0;border-bottom:none}
+    #mapa .container{max-width:100%;padding:0}
+    .fullbleed{width:100vw;margin-left:calc(50% - 50vw)}
+    #map{width:100%;height:calc(100dvh - var(--header-h) - var(--tabs-h));min-height:420px;border:1px solid var(--ring);border-radius:0}
+  </style>
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <header>
+    <div class="container row">
+      <div class="brand">Bali · Guía & Itinerarios <small>(22–29 nov)</small></div>
+      <button id="btnMenu" class="hamburger" aria-label="Abrir menú" aria-controls="menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <!-- Tabs fijas -->
+  <div class="tabs-wrap">
+    <div class="tabs container" id="tabs">
+      <a class="tab" href="#inicio">Inicio</a>
+      <a class="tab" href="#imperdibles">Imperdibles</a>
+      <a class="tab" href="#alojarse">Alojarse</a>
+      <a class="tab" href="#zonas-playa">Zonas de Playa</a>
+      <a class="tab" href="#itinerario-max">Itinerario a tope</a>
+      <a class="tab" href="#itinerario-relax">Itinerario relajado</a>
+      <a class="tab" href="#mini-guia">Mini‑guía</a>
+      <a class="tab" href="#mapa">Mapa</a>
+    </div>
+  </div>
+  <div id="scrim" class="overlay" aria-hidden="true"></div>
+  <nav id="menu" aria-label="Navegación">
+    <ul>
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#imperdibles">Lugares y experiencias imperdibles</a></li>
+      <li><a href="#alojarse">Lugares donde quedarse</a></li>
+      <li><a href="#zonas-playa">Zonas de playa: diferencias y cómo elegir</a></li>
+      <li><a href="#itinerario-max">Itinerario a tope</a></li>
+      <li><a href="#itinerario-relax">Itinerario relajado</a></li>
+      <li><a href="#mini-guia">Mini‑guía de supervivencia</a></li>
+      <li><a href="#mapa">Mapa interactivo</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <!-- INICIO -->
+    <section id="inicio">
+      <h2>Inicio</h2>
+      <p class="sub">Fechas, visión general y consejos rápidos.</p>
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="badge">Fechas y horas</div>
+          <ul class="list">
+            <li><strong>Llegada</strong>: 22 de noviembre · 17:30 — Aeropuerto de Denpasar (DPS).</li>
+            <li><strong>Salida</strong>: 29 de noviembre · 13:50 — desde Denpasar (DPS).</li>
+          </ul>
+          <div class="kpi">
+            <div class="item">7 noches</div>
+            <div class="item">2 bases aconsejadas: Ubud + Sur</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="badge">Descripción general</div>
+          <p>Bali combina <em>templos y cultura</em>, <em>naturaleza tropical</em> (arrozales, cascadas, volcanes), y <em>playas</em> de surf y relax. Ubud es el corazón cultural; el sur (Canggu, Seminyak, Jimbaran, Uluwatu, Sanur) ofrece mar, atardeceres y beach clubs; y Nusa Penida es la excursión estrella.</p>
+        </div>
+      </div>
+      <div class="grid cols-3" style="margin-top:16px">
+        <div class="card">
+          <div class="badge">Consejos básicos</div>
+          <ul class="list">
+            <li>VOA (visa a la llegada) disponible para muchos países; pasaporte 6+ meses.</li>
+            <li>Tráfico lento: calcula colchón extra en traslados.</li>
+            <li>Respeta códigos en templos: hombros/rodillas cubiertos.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="badge">Consejos prácticos</div>
+          <ul class="list">
+            <li><strong>Corriente</strong>: 230V · enchufe tipo C/F (igual que España).</li>
+            <li><strong>Moneda</strong>: Rupia (IDR). Lleva efectivo + tarjeta; cajeros en centros comerciales.</li>
+            <li><strong>Clima en noviembre</strong>: cálido‑húmedo con chaparrones. Impermeable ligero y repelente.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="badge">Apps útiles</div>
+          <span class="pill">Grab / Gojek</span>
+          <span class="pill">Google Maps / Maps.me</span>
+          <span class="pill">Google Translate</span>
+          <span class="pill">XE / Wise</span>
+          <span class="pill">Airalo / MyTelkomsel</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPERDIBLES -->
+    <section id="imperdibles">
+      <h2>Lugares y experiencias imperdibles</h2>
+      <p class="sub">Lo más top que ver en Bali.</p>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>Ubud y alrededores</h3>
+          <ul class="list">
+            <li>Arrozales de Tegallalang</li>
+            <li>Templos: Tirta Empul, Goa Gajah, Gunung Kawi</li>
+            <li>Cascadas: Tegenungan, Tukad Cepung, Nungnung / Sekumpul</li>
+            <li>Amanecer en volcán Batur (trekking opcional)</li>
+            <li>Ubud Monkey Forest y mercado local</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Sur de Bali</h3>
+          <ul class="list">
+            <li>Playas de Bukit: Padang Padang, Bingin, Dreamland, Nyang Nyang</li>
+            <li>Templo de Uluwatu + danza kecak al atardecer</li>
+            <li>Jimbaran: marisco en la arena</li>
+            <li>Beach clubs: Finns, La Brisa, Potato Head, Sundays</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Excursiones</h3>
+          <ul class="list">
+            <li>Nusa Penida (Kelingking, Broken Beach, Angel’s Billabong, Crystal Bay)</li>
+            <li>Nusa Lembongan / Ceningan (snorkel tranquilo)</li>
+            <li>Tanah Lot (templo costero icónico)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALOJARSE -->
+    <section id="alojarse">
+      <h2>Lugares donde quedarse</h2>
+      <p class="sub">Mejor dividir en dos bases para ahorrar traslados.</p>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Base 1 — Ubud (3–4 noches)</h3>
+          <ul class="list">
+            <li>Cultura y naturaleza a mano (templos, cascadas, arrozales)</li>
+            <li>Spas, clases de cocina, espectáculos de danza</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Base 2 — Zona sur (3–4 noches)</h3>
+          <ul class="list">
+            <li><strong>Seminyak</strong>: chic, gastronomía, beach clubs</li>
+            <li><strong>Canggu</strong>: joven, surf, cafés y tiendas</li>
+            <li><strong>Jimbaran</strong>: tranquilo y familiar, marisco en la arena</li>
+            <li><strong>Uluwatu</strong>: acantilados, playas de postal, sunsets</li>
+            <li><strong>Sanur</strong>: playa calmada y base práctica</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONAS DE PLAYA -->
+    <section id="zonas-playa">
+      <h2>Zonas de playa: diferencias y cómo elegir</h2>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Resumen rápido</h3>
+          <ul class="list">
+            <li><strong>Canggu</strong>: bohemio y surf. +vida social / −playa para nadar.</li>
+            <li><strong>Seminyak</strong>: chic y cómoda. +restaurantes/shops / −caro y tráfico.</li>
+            <li><strong>Jimbaran</strong>: calma. +mar tranquilo y marisco / −poca noche.</li>
+            <li><strong>Uluwatu</strong>: acantilados. +paisajes / −movilidad.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Cómo elegir</h3>
+          <ul class="list">
+            <li>¿Ambiente social & surf? → <strong>Canggu</strong></li>
+            <li>¿Comodidad & beach clubs? → <strong>Seminyak</strong></li>
+            <li>¿Relax & familia? → <strong>Jimbaran</strong></li>
+            <li>¿Atardeceres épicos & playas de postal? → <strong>Uluwatu</strong></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ITINERARIO MAX -->
+    <section id="itinerario-max">
+      <h2>Itinerario a tope</h2>
+      <p class="sub">Para aprovechar cada día.</p>
+      <div class="card">
+        <ul class="list">
+          <li><strong>22/11</strong> · Llegada 17:30 → traslado a Ubud, check‑in y cena ligera.</li>
+          <li><strong>23/11</strong> · Tirta Empul, Gunung Kawi, Goa Gajah + arrozales de Tegallalang + Tegenungan.</li>
+          <li><strong>24/11</strong> · Amanecer en volcán Batur (trekking) + spa/masaje tarde.</li>
+          <li><strong>25/11</strong> · Cascadas del norte (Sekumpul o Nungnung) + danza en Ubud.</li>
+          <li><strong>26/11</strong> · Traslado al sur. Uluwatu temple + danza kecak + cena en Jimbaran.</li>
+          <li><strong>27/11</strong> · Excursión a Nusa Penida (costa oeste).</li>
+          <li><strong>28/11</strong> · Playas de Bukit (Padang Padang, Bingin, Dreamland) + beach club.</li>
+          <li><strong>29/11</strong> · Mañana libre y salida 13:50.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ITINERARIO RELAX -->
+    <section id="itinerario-relax">
+      <h2>Itinerario relajado</h2>
+      <p class="sub">Mismo espíritu, menos prisas.</p>
+      <div class="card">
+        <ul class="list">
+          <li><strong>22/11</strong> · Llegada → Ubud tranquilo.</li>
+          <li><strong>23/11</strong> · Tirta Empul + Gunung Kawi + spa.</li>
+          <li><strong>24/11</strong> · Tegenungan + mercado de Ubud.</li>
+          <li><strong>25/11</strong> · Tegallalang + clase de cocina o paseo campiña.</li>
+          <li><strong>26/11</strong> · Traslado a Seminyak/Canggu → sunset.</li>
+          <li><strong>27/11</strong> · Playas de Uluwatu + templo al atardecer.</li>
+          <li><strong>28/11</strong> · Beach club (Finns / La Brisa / Potato Head).</li>
+          <li><strong>29/11</strong> · Desayuno tranquilo y salida.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MINI GUIA -->
+    <section id="mini-guia">
+      <h2>Mini‑guía de supervivencia</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3>Transporte</h3>
+          <ul class="list">
+            <li>Conductor privado día completo: ~600–700k IDR</li>
+            <li>Grab/Gojek para trayectos cortos</li>
+            <li>Moto solo si tienes experiencia</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Dinero</h3>
+          <ul class="list">
+            <li>1 € ≈ 17.000 IDR (aprox.)</li>
+            <li>Retira en cajeros de bancos/centros comerciales</li>
+            <li>Siempre algo de efectivo para mercados</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Salud & cultura</h3>
+          <ul class="list">
+            <li>Agua siempre embotellada</li>
+            <li>Repelente + protector solar</li>
+            <li>Sarong para templos; respeto en ceremonias</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section id="mapa">
+      <h2>Mapa interactivo</h2>
+      <p class="sub">Zonas y puntos clave (toques para ver detalles).</p>
+      <div class="fullbleed">
+        <div id="map" role="application" aria-label="Mapa de Bali"></div>
+      </div>
+    </section>
+
+    <div class="footer">Hecho con ❤️ para tu viaje a Bali · Nov 2025</div>
+  </main>
+
+  <script>
+    // Menú hamburguesa
+    const btn = document.getElementById('btnMenu');
+    const nav = document.getElementById('menu');
+    const scrim = document.getElementById('scrim');
+    function toggle(){
+      const open = !nav.classList.contains('open');
+      nav.classList.toggle('open');
+      scrim.classList.toggle('show');
+      btn.setAttribute('aria-expanded', String(open));
+    }
+    btn.addEventListener('click', toggle);
+    scrim.addEventListener('click', toggle);
+
+    // Control de secciones (solo una visible)
+    function setActiveSection(id){
+      const target = id || 'inicio';
+      document.querySelectorAll('main section').forEach(sec=>{
+        sec.classList.toggle('active', sec.id === target);
+      });
+      document.querySelectorAll('#menu a').forEach(a=>{
+        const match = a.getAttribute('href') === '#' + target;
+        a.classList.toggle('active', match);
+      });
+      if(location.hash !== '#' + target){
+        history.replaceState(null, '', '#' + target);
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    // Inicializar sección activa según el hash o 'inicio'
+    window.addEventListener('load', ()=>{
+      setActiveSection((location.hash||'').replace('#','') || 'inicio');
+    });
+    window.addEventListener('hashchange', ()=>{
+      setActiveSection((location.hash||'').replace('#','') || 'inicio');
+    });
+
+    document.querySelectorAll('#menu a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const id = a.getAttribute('href').replace('#','') || 'inicio';
+        setActiveSection(id);
+        toggle();
+      });
+    });
+
+    // Tabs helpers
+    function syncTabs(){
+      const current = (location.hash||'#inicio');
+      document.querySelectorAll('#tabs .tab').forEach(t=>{
+        t.classList.toggle('active', t.getAttribute('href')===current);
+      });
+    }
+    document.querySelectorAll('#tabs .tab').forEach(t=>{
+      t.addEventListener('click',(e)=>{
+        e.preventDefault();
+        const id = t.getAttribute('href').replace('#','') || 'inicio';
+        setActiveSection(id);
+        syncTabs();
+        if(id==='mapa') resizeMap();
+      });
+    });
+    window.addEventListener('load', ()=>{ syncTabs(); resizeMap(); });
+    window.addEventListener('hashchange', ()=>{ syncTabs(); if(location.hash==='#mapa') resizeMap(); });
+
+    // Mapa Leaflet (estilo similar al ejemplo compartido)
+    const map = L.map('map', { center: [-8.45, 115.09], zoom: 10, scrollWheelZoom: true });
+    function resizeMap(){
+      setTimeout(()=>{
+        map.invalidateSize();
+        if(location.hash==='#mapa'){
+          map.fitBounds(visitBounds, { padding:[20,20] });
+        }
+      }, 60);
+    }
+    L.control.scale().addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Helper para iconos de color
+    function coloredMarker(color){
+      return L.icon({
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+    }
+
+    // Grupos por categoría
+    const gZonas = L.layerGroup().addTo(map);
+    // Capas por categoría
+    const gPlayas = L.layerGroup().addTo(map);
+    const gTemplos = L.layerGroup().addTo(map);
+    const gCascadas = L.layerGroup().addTo(map);
+    const gArrozales = L.layerGroup().addTo(map);
+
+    // Zonas base (Canggu, Seminyak, Jimbaran, Uluwatu, Sanur, Ubud)
+    const zonas = [
+      { name: 'Ubud (base cultural)', lat:-8.5069, lng:115.2625, color:'green', html:`<h4>Ubud</h4><div>Templos, arrozales y cascadas; ideal 3–4 noches.</div>`},
+      { name: 'Canggu (surf & cafés)', lat:-8.6478, lng:115.1385, color:'orange', html:`<h4>Canggu</h4><div>Ambiente joven, surf y vida social; tráfico intenso.</div>`},
+      { name: 'Seminyak (chic & beach clubs)', lat:-8.6900, lng:115.1686, color:'violet', html:`<h4>Seminyak</h4><div>Gastronomía, compras y clubs (Potato Head, Ku De Ta).</div>`},
+      { name: 'Jimbaran (calma & marisco)', lat:-8.7796, lng:115.1682, color:'gold', html:`<h4>Jimbaran</h4><div>Playa tranquila y cenas de marisco en la arena.</div>`},
+      { name: 'Uluwatu (acantilados)', lat:-8.8295, lng:115.0843, color:'red', html:`<h4>Uluwatu</h4><div>Playas de postal y templo con danza al atardecer.</div>`},
+      { name: 'Sanur (playa calmada)', lat:-8.6950, lng:115.2625, color:'blue', html:`<h4>Sanur</h4><div>Base práctica con aguas tranquilas y amaneceres.</div>`},
+      { name: 'Aeropuerto DPS', lat:-8.7482, lng:115.1675, color:'grey', html:`<h4>Aeropuerto DPS</h4><div>Llegada 22/11 17:30 · Salida 29/11 13:50.</div>`},
+    ];
+
+    zonas.forEach(z=>{
+      L.marker([z.lat,z.lng], { icon: coloredMarker(z.color) })
+        .bindPopup(z.html)
+        .bindTooltip(z.name)
+        .addTo(gZonas);
+    });
+
+    // Sitios de interés por categorías
+    const playas = [
+  { 
+    name:'Padang Padang Beach', 
+    lat:-8.8096, 
+    lng:115.1028, 
+    html:'<h4>Padang Padang</h4><div>Playa mítica de surf y baño.</div>' 
+  },
+  { 
+    name:'Bingin Beach', 
+    lat:-8.8109, 
+    lng:115.1048, 
+    html:'<h4>Bingin</h4><div>Calas y escaleras entre acantilados.</div>' 
+  },
+  { 
+    name:'Dreamland Beach', 
+    lat:-8.8030, 
+    lng:115.1035, 
+    html:'<h4>Dreamland</h4><div>Playa amplia con buenas olas.</div>' 
+  },
+  { 
+    name:'Nyang Nyang Beach', 
+    lat:-8.8427, 
+    lng:115.0931, 
+    html:'<h4>Nyang Nyang</h4><div>Playa salvaje y poco concurrida.</div>' 
+  }
+];
+
+
+    const templos = [
+      { name:'Tirta Empul', lat:-8.4159, lng:115.3140, html:'<h4>Tirta Empul</h4><div>Templo de purificación con piscinas sagradas.</div>' },
+      { name:'Goa Gajah', lat:-8.5191, lng:115.2900, html:'<h4>Goa Gajah</h4><div>“Cueva del Elefante”.</div>' },
+      { name:'Uluwatu Temple', lat:-8.8291, lng:115.0844, html:'<h4>Uluwatu</h4><div>Acantilado + danza kecak al atardecer.</div>' },
+      { name:'Tanah Lot', lat:-8.6216, lng:115.0868, html:'<h4>Tanah Lot</h4><div>Templo costero icónico, ideal al atardecer.</div>' }
+    ];
+
+    const cascadas = [
+      { name:'Tegenungan Waterfall', lat:-8.5815, lng:115.2892, html:'<h4>Tegenungan</h4><div>Cascada popular cerca de Ubud.</div>' },
+      { name:'Nungnung Waterfall', lat:-8.3730, lng:115.2375, html:'<h4>Nungnung</h4><div>Cascada potente; requiere bajar/escalar.</div>' },
+      { name:'Sekumpul Waterfall', lat:-8.2686, lng:115.1676, html:'<h4>Sekumpul</h4><div>Una de las cascadas más espectaculares del norte.</div>' }
+    ];
+
+    const arrozales = [
+      { name:'Tegallalang Rice Terrace', lat:-8.4353, lng:115.2799, html:'<h4>Tegallalang</h4><div>Arrozales en terrazas al norte de Ubud.</div>' }
+    ];
+
+    // Estilo pedido: rojo intenso con relleno rojo claro
+    const poiStyle = { color:'#dc2626', fillColor:'#f87171', fillOpacity:.4, weight:2, radius:8 };
+
+    playas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gPlayas));
+    templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gTemplos));
+    cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gCascadas));
+    arrozales.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gArrozales));
+
+    // Capas
+    const baseLayers = {};
+    const overlays = {
+      'Zonas base': gZonas,
+      'Playas': gPlayas,
+      'Templos': gTemplos,
+      'Cascadas': gCascadas,
+      'Arrozales': gArrozales
+    };
+    L.control.layers(baseLayers, overlays, { collapsed:true }).addTo(map);
+
+    // Ajustar vista inicial para cubrir todos los puntos
+    // Delimitar el área de visita (sur de Bali + Ubud + Nusa Penida)
+    const visitBounds = L.latLngBounds([
+      [-8.92, 114.95], // SO: cerca de Uluwatu / límite oeste
+      [-8.15, 115.65]  // NE: por encima de Ubud y hacia Nusa Penida
+    ]);
+    map.setMaxBounds(visitBounds.pad(0.1));
+    map.fitBounds(visitBounds, { padding:[20,20] });
+  </script>
+</body>
+</html>
