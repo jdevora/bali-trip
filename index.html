@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Bali — Mini‑Guía + Itinerarios (22–29 nov)</title>
+  <title>Bali — Mini-Guía + Itinerarios (22–29 nov)</title>
   <style>
     :root{
       --bg:#0f172a; --panel:#111827; --card:#1f2937; --muted:#94a3b8; --accent:#14b8a6; --text:#e5e7eb; --ring:#334155;
@@ -51,7 +51,8 @@
     .list li{margin:6px 0}
     .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--ring);background:var(--card);color:var(--text);margin:4px 6px 0 0;font-size:12px}
 
-    .footer{text-align:center;color:var(--muted);padding:28px 0}
+    /* Iframe del mapa */
+    #map-frame{border:0;width:100%;height:80vh;border-radius:12px}
   </style>
 </head>
 <body>
@@ -72,7 +73,7 @@
       <a class="tab" href="#zonas-playa">Zonas de Playa</a>
       <a class="tab" href="#itinerario-max">Itinerario a tope</a>
       <a class="tab" href="#itinerario-relax">Itinerario relajado</a>
-      <a class="tab" href="#mini-guia">Mini‑guía</a>
+      <a class="tab" href="#mini-guia">Mini-guía</a>
       <a class="tab" href="#mapa">Mapa</a>
     </div>
   </div>
@@ -86,13 +87,12 @@
       <li><a href="#zonas-playa">Zonas de playa: diferencias y cómo elegir</a></li>
       <li><a href="#itinerario-max">Itinerario a tope</a></li>
       <li><a href="#itinerario-relax">Itinerario relajado</a></li>
-      <li><a href="#mini-guia">Mini‑guía de supervivencia</a></li>
+      <li><a href="#mini-guia">Mini-guía de supervivencia</a></li>
       <li><a href="#mapa">Mapa interactivo</a></li>
     </ul>
   </nav>
 
   <main class="container">
-    <!-- INICIO -->
     <section id="inicio" class="active">
       <h2>Inicio</h2>
       <p class="sub">Fechas, visión general y consejos rápidos.</p>
@@ -127,31 +127,30 @@
           <ul class="list">
             <li><strong>Corriente</strong>: 230V · enchufe tipo C/F (igual que España).</li>
             <li><strong>Moneda</strong>: Rupia (IDR). Lleva efectivo + tarjeta; cajeros en centros comerciales.</li>
-            <li><strong>Clima en noviembre</strong>: cálido‑húmedo con chaparrones. Impermeable ligero y repelente.</li>
+            <li><strong>Clima en noviembre</strong>: cálido-húmedo con chaparrones. Impermeable ligero y repelente.</li>
           </ul>
         </div>
         <div class="card">
           <div class="badge">Apps útiles</div>
           <ul class="list">
-            <li><strong>Grab</strong> — VTC y moto taxi. <a href="https://play.google.com/store/search?q=Grab&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Gojek</strong> — Alternativa a Grab, súper extendida. <a href="https://play.google.com/store/search?q=Gojek&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Bluebird Taxi</strong> — Taxis oficiales con taxímetro. <a href="https://play.google.com/store/search?q=My%20Blue%20Bird&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Google Maps</strong> — Navegación y horarios. <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.maps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Maps.me</strong> — Mapas offline. <a href="https://play.google.com/store/search?q=maps.me&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Google Translate</strong> — Traducción texto/voz/cámara. <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.translate" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>XE Currency</strong> — Conversor de divisas. <a href="https://play.google.com/store/search?q=XE%20Currency&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Wise</strong> — Tarjeta y pagos con buen tipo de cambio. <a href="https://play.google.com/store/search?q=Wise&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>MyTelkomsel</strong> — Gestiona tu SIM local. <a href="https://play.google.com/store/search?q=MyTelkomsel&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Airalo</strong> — eSIMs internacionales. <a href="https://play.google.com/store/search?q=Airalo&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>Klook</strong> — Excursiones y entradas. <a href="https://play.google.com/store/search?q=Klook&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>GetYourGuide</strong> — Tours y actividades. <a href="https://play.google.com/store/search?q=GetYourGuide&c=apps" target="_blank" rel="noopener">Google Play</a></li>
-            <li><strong>HappyCow</strong> — Restaurantes veg/veggie. <a href="https://play.google.com/store/search?q=HappyCow&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Grab</strong> — VTC y moto taxi. <a href="https://play.google.com/store/search?q=Grab&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Gojek</strong> — Alternativa a Grab, súper extendida. <a href="https://play.google.com/store/search?q=Gojek&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Bluebird Taxi</strong> — Taxis oficiales con taxímetro. <a href="https://play.google.com/store/search?q=My%20Blue%20Bird&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Google Maps</strong> — Navegación y horarios. <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.maps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Maps.me</strong> — Mapas offline. <a href="https://play.google.com/store/search?q=maps.me&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Google Translate</strong> — Traducción texto/voz/cámara. <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.translate" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>XE Currency</strong> — Conversor de divisas. <a href="https://play.google.com/store/search?q=XE%20Currency&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Wise</strong> — Tarjeta y pagos con buen tipo de cambio. <a href="https://play.google.com/store/search?q=Wise&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>MyTelkomsel</strong> — Gestiona tu SIM local. <a href="https://play.google.com/store/search?q=MyTelkomsel&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Airalo</strong> — eSIMs internacionales. <a href="https://play.google.com/store/search?q=Airalo&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>Klook</strong> — Excursiones y entradas. <a href="https://play.google.com/store/search?q=Klook&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>GetYourGuide</strong> — Tours y actividades. <a href="https://play.google.com/store/search?q=GetYourGuide&c=apps" target="_blank" rel="noopener">Google Play</a></li>
+            <li><strong>HappyCow</strong> — Restaurantes veg/veggie. <a href="https://play.google.com/store/search?q=HappyCow&c=apps" target="_blank" rel="noopener">Google Play</a></li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- IMPERDIBLES -->
     <section id="imperdibles">
       <h2>Lugares y experiencias imperdibles</h2>
       <p class="sub">Lo más top que ver en Bali.</p>
@@ -186,7 +185,6 @@
       </div>
     </section>
 
-    <!-- ALOJARSE -->
     <section id="alojarse">
       <h2>Lugares donde quedarse</h2>
       <p class="sub">Mejor dividir en dos bases para ahorrar traslados.</p>
@@ -211,7 +209,6 @@
       </div>
     </section>
 
-    <!-- ZONAS DE PLAYA -->
     <section id="zonas-playa">
       <h2>Zonas de playa: diferencias y cómo elegir</h2>
       <div class="grid cols-2">
@@ -236,13 +233,12 @@
       </div>
     </section>
 
-    <!-- ITINERARIO MAX -->
     <section id="itinerario-max">
       <h2>Itinerario a tope</h2>
       <p class="sub">Para aprovechar cada día.</p>
       <div class="card">
         <ul class="list">
-          <li><strong>22/11</strong> · Llegada 17:30 → traslado a Ubud, check‑in y cena ligera.</li>
+          <li><strong>22/11</strong> · Llegada 17:30 → traslado a Ubud, check-in y cena ligera.</li>
           <li><strong>23/11</strong> · Tirta Empul, Gunung Kawi, Goa Gajah + arrozales de Tegallalang + Tegenungan.</li>
           <li><strong>24/11</strong> · Amanecer en volcán Batur (trekking) + spa/masaje tarde.</li>
           <li><strong>25/11</strong> · Cascadas del norte (Sekumpul o Nungnung) + danza en Ubud.</li>
@@ -254,7 +250,6 @@
       </div>
     </section>
 
-    <!-- ITINERARIO RELAX -->
     <section id="itinerario-relax">
       <h2>Itinerario relajado</h2>
       <p class="sub">Mismo espíritu, menos prisas.</p>
@@ -272,9 +267,8 @@
       </div>
     </section>
 
-    <!-- MINI GUIA -->
     <section id="mini-guia">
-      <h2>Mini‑guía de supervivencia</h2>
+      <h2>Mini-guía de supervivencia</h2>
       <div class="grid cols-3">
         <div class="card">
           <h3>Transporte</h3>
@@ -303,13 +297,12 @@
       </div>
     </section>
 
-    <!-- MAPA (en archivo separado) -->
+    <!-- MAPA (iframe) -->
     <section id="mapa">
       <h2>Mapa interactivo</h2>
-      <p class="sub">Abre el mapa completo en una nueva pestaña.</p>
-      <div class="card">
-        <p>Para una experiencia fluida, hemos movido el mapa a un archivo aparte:</p>
-        <p><a href="bali-mapa.html" target="_blank" rel="noopener">Abrir mapa interactivo</a></p>
+      <p class="sub">Explora las zonas base y los puntos clave.</p>
+      <div class="card" style="padding:0;overflow:hidden">
+        <iframe id="map-frame" src="bali-mapa.html" loading="lazy"></iframe>
       </div>
     </section>
 
@@ -317,7 +310,6 @@
   </main>
 
   <script>
-    // Menú hamburguesa
     const btn = document.getElementById('btnMenu');
     const nav = document.getElementById('menu');
     const scrim = document.getElementById('scrim');
@@ -330,7 +322,6 @@
     btn.addEventListener('click', toggleMenu);
     scrim.addEventListener('click', toggleMenu);
 
-    // Secciones (solo una visible) + Tabs
     function setActiveSection(id){
       const target = id || 'inicio';
       document.querySelectorAll('main section').forEach(sec=>{
@@ -344,6 +335,12 @@
         history.replaceState(null, '', '#' + target);
       }
       window.scrollTo({ top: 0, behavior: 'auto' });
+
+      // Si es el mapa, avisar al iframe para que re-ajuste
+      if (target === 'mapa') {
+        const frame = document.getElementById('map-frame');
+        frame?.contentWindow?.postMessage({ type:'map-visible' }, '*');
+      }
     }
     function syncTabs(){
       const current = (location.hash||'#inicio');
@@ -369,10 +366,15 @@
       });
     });
 
-    // Inicialización
     window.addEventListener('load', ()=>{
       setActiveSection((location.hash||'').replace('#','') || 'inicio');
       syncTabs();
+
+      // Si ya se entra directo al mapa, mandar señal
+      if ((location.hash||'') === '#mapa') {
+        const frame = document.getElementById('map-frame');
+        frame?.contentWindow?.postMessage({ type:'map-visible' }, '*');
+      }
     });
     window.addEventListener('hashchange', ()=>{
       setActiveSection((location.hash||'').replace('#','') || 'inicio');

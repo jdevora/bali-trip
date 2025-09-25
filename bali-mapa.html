@@ -6,15 +6,17 @@
   <title>Bali — Mapa interactivo</title>
   <style>
     :root{ --header-h:56px }
-    html,body{margin:0;height:100%;background:#0f172a;color:#e5e7eb;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
-    header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.9);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid #334155}
+    html,body{margin:0;height:100%;background:#0f172a;color:#e5e7eb;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif}
+    header{position:sticky;top:0;z-index:10;background:rgba(15,23,42,.9);
+      backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid #334155}
     .container{max-width:1100px;margin:0 auto;padding:0 16px}
-    header .row{display:flex;align-items:center;justify-content:space-between;min-height:var(--header-h)}
+    header .row{display:flex;align-items:center;justify-content:flex-start;min-height:var(--header-h)}
     .brand{font-weight:700}
     .sub{color:#94a3b8;margin:0 0 10px}
     main{padding:16px}
-    #map{width:100%;height:calc(100dvh - var(--header-h) - 16px);min-height:500px;border:1px solid #334155;border-radius:12px}
-    a{color:#22d3ee}
+    #map{width:100%;height:calc(100dvh - var(--header-h) - 16px);min-height:500px;
+      border:1px solid #334155;border-radius:12px}
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -23,7 +25,6 @@
   <header>
     <div class="container row">
       <div class="brand">Bali · Mapa interactivo</div>
-      <a href="./bali-guia.html" style="text-decoration:none;color:#22d3ee">⟵ Volver a la guía</a>
     </div>
   </header>
   <main class="container">
@@ -70,9 +71,8 @@
         .bindPopup(z.html).bindTooltip(z.name).addTo(gZonas);
     });
 
-    // Puntos por categorías (estilo solicitado)
+    // Puntos por categorías
     const poiStyle = { color:'#dc2626', fillColor:'#f87171', fillOpacity:.4, weight:2, radius:8 };
-
     const playas = [
       { name:'Padang Padang Beach', lat:-8.8096, lng:115.1028, html:'<h4>Padang Padang</h4><div>Playa mítica de surf y baño.</div>' },
       { name:'Bingin Beach', lat:-8.8109, lng:115.1048, html:'<h4>Bingin</h4><div>Calas y escaleras entre acantilados.</div>' },
@@ -96,6 +96,7 @@
 
     playas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gPlayas));
     templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gTemplos));
+    cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).addTooltip?null:0);
     cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gCascadas));
     arrozales.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gArrozales));
 
@@ -113,9 +114,33 @@
     map.setMaxBounds(visitBounds.pad(0.1));
     map.fitBounds(visitBounds, { padding:[20,20] });
 
-    // Asegurar redibujo correcto
+    // Redibujos seguros (iframe + visibilidad)
     setTimeout(()=> map.invalidateSize(), 60);
     window.addEventListener('resize', ()=> setTimeout(()=> map.invalidateSize(), 60));
+    map.whenReady(() => {
+      setTimeout(() => {
+        map.invalidateSize();
+        map.fitBounds(visitBounds, { padding:[20,20] });
+      }, 200);
+    });
+
+    // Escuchar señal del padre
+    window.addEventListener('message', (e)=>{
+      if (e && e.data && e.data.type === 'map-visible') {
+        setTimeout(() => {
+          map.invalidateSize();
+          map.fitBounds(visitBounds, { padding:[20,20] });
+        }, 80);
+      }
+    });
+
+    // Observador de tamaño: si cambia el layout del iframe, reajustar
+    const ro = new ResizeObserver(()=>{
+      setTimeout(()=>{
+        map.invalidateSize();
+      }, 60);
+    });
+    ro.observe(document.documentElement);
   </script>
 </body>
 </html>
