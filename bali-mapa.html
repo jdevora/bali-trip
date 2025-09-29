@@ -43,7 +43,7 @@
     // Capas por categoría
     const gZonas = L.layerGroup().addTo(map);
     const gPlayas = L.layerGroup().addTo(map);
-    const gTemplos = L.layerGroup().addTo(map);
+    const gAtracciones = L.layerGroup().addTo(map);
     const gCascadas = L.layerGroup().addTo(map);
     const gArrozales = L.layerGroup().addTo(map);
 
@@ -85,17 +85,37 @@
       { name:'Uluwatu Temple', lat:-8.8291, lng:115.0844, html:'<h4>Uluwatu</h4><div>Danza kecak al atardecer.</div>' },
       { name:'Tanah Lot', lat:-8.6216, lng:115.0868, html:'<h4>Tanah Lot</h4><div>Templo costero icónico.</div>' }
     ];
-    const cascadas = [
-      { name:'Tegenungan Waterfall', lat:-8.5815, lng:115.2892, html:'<h4>Tegenungan</h4><div>Cascada popular cerca de Ubud.</div>' },
-      { name:'Nungnung Waterfall', lat:-8.3730, lng:115.2375, html:'<h4>Nungnung</h4><div>Cascada potente.</div>' },
-      { name:'Sekumpul Waterfall', lat:-8.2686, lng:115.1676, html:'<h4>Sekumpul</h4><div>Espectacular conjunto de saltos.</div>' }
+    // Atracciones (extras que no encajan en otras categorías)
+    const atraccionesExtras = [
+      { name:'Amanecer en Monte Batur', lat:-8.239, lng:115.376, html:'<h4>Monte Batur</h4><div>Amanecer y trekking opcional.</div>' },
+      { name:'Ubud Monkey Forest', lat:-8.519, lng:115.262, html:'<h4>Ubud Monkey Forest</h4><div>Santuario de monos y bosque sagrado.</div>' },
+      { name:'Mercado de Ubud', lat:-8.5095, lng:115.2623, html:'<h4>Mercado de Ubud</h4><div>Artesanías y vida local.</div>' },
+      { name:'Jimbaran (marisco en la arena)', lat:-8.7757, lng:115.1673, html:'<h4>Jimbaran</h4><div>Restaurantes de marisco al atardecer.</div>' },
+      { name:'Finns Beach Club', lat:-8.6620, lng:115.1307, html:'<h4>Finns Beach Club</h4><div>Beach club en Berawa.</div>' },
+      { name:'La Brisa Bali', lat:-8.6470, lng:115.1260, html:'<h4>La Brisa</h4><div>Beach club en Echo Beach.</div>' },
+      { name:'Potato Head Beach Club', lat:-8.6825, lng:115.1466, html:'<h4>Potato Head</h4><div>Beach club en Seminyak.</div>' },
+      { name:'Sundays Beach Club', lat:-8.8425, lng:115.1530, html:'<h4>Sundays Beach Club</h4><div>Calita en Ungasan.</div>' },
+      // Nusa Penida puntos clave
+      { name:'Kelingking (Nusa Penida)', lat:-8.7380, lng:115.4600, html:'<h4>Kelingking</h4><div>Mirador icónico.</div>' },
+      { name:'Broken Beach (Nusa Penida)', lat:-8.7255, lng:115.4607, html:'<h4>Broken Beach</h4><div>Arco natural junto al mar.</div>' },
+      { name:'Angel’s Billabong (Nusa Penida)', lat:-8.7251, lng:115.4644, html:'<h4>Angel’s Billabong</h4><div>Piscina natural.</div>' },
+      { name:'Crystal Bay (Nusa Penida)', lat:-8.7209, lng:115.4571, html:'<h4>Crystal Bay</h4><div>Snorkel y atardecer.</div>' },
+      // Lembongan / Ceningan
+      { name:'Puente Amarillo (Lembongan–Ceningan)', lat:-8.6845, lng:115.4525, html:'<h4>Yellow Bridge</h4><div>Conexión Lembongan–Ceningan, buen punto para snorkel cercano.</div>' }
     ];
+    atraccionesExtras.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
+
+    const cascadas = [{ name:'Tegenungan Waterfall', lat:-8.5815, lng:115.2892, html:'<h4>Tegenungan</h4><div>Cascada popular cerca de Ubud.</div>' },
+      { name:'Nungnung Waterfall', lat:-8.3730, lng:115.2375, html:'<h4>Nungnung</h4><div>Cascada potente.</div>' },
+      { name:'Sekumpul Waterfall', lat:-8.2686, lng:115.1676, html:'<h4>Sekumpul</h4><div>Espectacular conjunto de saltos.</div>' },
+      { name:'Tukad Cepung Waterfall', lat:-8.4336, lng:115.4285, html:'<h4>Tukad Cepung</h4><div>Rayo de luz en cañón.</div>' }
+];
     const arrozales = [
       { name:'Tegallalang Rice Terrace', lat:-8.4353, lng:115.2799, html:'<h4>Tegallalang</h4><div>Arrozales en terrazas al norte de Ubud.</div>' }
     ];
 
     playas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gPlayas));
-    templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gTemplos));
+    templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
     cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).addTooltip?null:0);
     cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gCascadas));
     arrozales.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gArrozales));
@@ -104,7 +124,7 @@
     L.control.layers({}, {
       'Zonas base': gZonas,
       'Playas': gPlayas,
-      'Templos': gTemplos,
+      'Atracciones': gAtracciones,
       'Cascadas': gCascadas,
       'Arrozales': gArrozales
     }, { collapsed:true }).addTo(map);
