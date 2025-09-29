@@ -88,8 +88,7 @@
       { name:'Tanah Lot', lat:-8.6216, lng:115.0868, html:'<h4>Tanah Lot</h4><div>Templo costero icónico.</div>' }
     ];
     // Atracciones (extras que no encajan en otras categorías)
-    const atraccionesExtras = [
-      { name:'Amanecer en Monte Batur', lat:-8.239, lng:115.376, html:'<h4>Monte Batur</h4><div>Amanecer y trekking opcional.</div>' },
+    const atraccionesExtras = [{ name:'Amanecer en Monte Batur', lat:-8.239, lng:115.376, html:'<h4>Monte Batur</h4><div>Amanecer y trekking opcional.</div>' },
       { name:'Ubud Monkey Forest', lat:-8.519, lng:115.262, html:'<h4>Ubud Monkey Forest</h4><div>Santuario de monos y bosque sagrado.</div>' },
       { name:'Mercado de Ubud', lat:-8.5095, lng:115.2623, html:'<h4>Mercado de Ubud</h4><div>Artesanías y vida local.</div>' },
       { name:'Jimbaran (marisco en la arena)', lat:-8.7757, lng:115.1673, html:'<h4>Jimbaran</h4><div>Restaurantes de marisco al atardecer.</div>' },
@@ -97,15 +96,17 @@
       { name:'La Brisa Bali', lat:-8.6470, lng:115.1260, html:'<h4>La Brisa</h4><div>Beach club en Echo Beach.</div>' },
       { name:'Potato Head Beach Club', lat:-8.6825, lng:115.1466, html:'<h4>Potato Head</h4><div>Beach club en Seminyak.</div>' },
       { name:'Sundays Beach Club', lat:-8.8425, lng:115.1530, html:'<h4>Sundays Beach Club</h4><div>Calita en Ungasan.</div>' },
-      // Nusa Penida puntos clave
+      { name:'Puente Amarillo (Lembongan–Ceningan)', lat:-8.6845, lng:115.4525, html:'<h4>Yellow Bridge</h4><div>Conexión Lembongan–Ceningan, buen punto para snorkel cercano.</div>' }];
+    atraccionesExtras.forEach(p=> L.circleMarker([p.lat,p.lng], poiAtracciones).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
+    // Nusa Penida (subcapa)
+    const penida = [
       { name:'Kelingking (Nusa Penida)', lat:-8.7380, lng:115.4600, html:'<h4>Kelingking</h4><div>Mirador icónico.</div>' },
       { name:'Broken Beach (Nusa Penida)', lat:-8.7255, lng:115.4607, html:'<h4>Broken Beach</h4><div>Arco natural junto al mar.</div>' },
       { name:'Angel’s Billabong (Nusa Penida)', lat:-8.7251, lng:115.4644, html:'<h4>Angel’s Billabong</h4><div>Piscina natural.</div>' },
-      { name:'Crystal Bay (Nusa Penida)', lat:-8.7209, lng:115.4571, html:'<h4>Crystal Bay</h4><div>Snorkel y atardecer.</div>' },
-      // Lembongan / Ceningan
-      { name:'Puente Amarillo (Lembongan–Ceningan)', lat:-8.6845, lng:115.4525, html:'<h4>Yellow Bridge</h4><div>Conexión Lembongan–Ceningan, buen punto para snorkel cercano.</div>' }
+      { name:'Crystal Bay (Nusa Penida)', lat:-8.7209, lng:115.4571, html:'<h4>Crystal Bay</h4><div>Snorkel y atardecer.</div>' }
     ];
-    atraccionesExtras.forEach(p=> L.circleMarker([p.lat,p.lng], poiAtracciones).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
+    penida.forEach(p=> L.circleMarker([p.lat,p.lng], poiAtracciones).bindPopup(p.html).bindTooltip(p.name).addTo(gPenida));
+
 
     const cascadas = [{ name:'Tegenungan Waterfall', lat:-8.5815, lng:115.2892, html:'<h4>Tegenungan</h4><div>Cascada popular cerca de Ubud.</div>' },
       { name:'Nungnung Waterfall', lat:-8.3730, lng:115.2375, html:'<h4>Nungnung</h4><div>Cascada potente.</div>' },
@@ -165,24 +166,6 @@
     });
     ro.observe(document.documentElement);
   
-    // Botón rápido para mostrar/ocultar Nusa Penida
-    const penidaToggle = L.control({ position:'topright' });
-    penidaToggle.onAdd = function(map){
-      const btn = L.DomUtil.create('button', 'leaflet-bar');
-      btn.title = 'Mostrar/Ocultar Nusa Penida';
-      btn.innerHTML = 'NP';
-      btn.style.padding = '6px 8px';
-      btn.style.cursor = 'pointer';
-      btn.style.background = 'white';
-      btn.style.border = '1px solid #ccc';
-      L.DomEvent.disableClickPropagation(btn);
-      L.DomEvent.on(btn, 'click', function(e){
-        L.DomEvent.stop(e);
-        if(map.hasLayer(gPenida)){ map.removeLayer(gPenida); } else { gPenida.addTo(map); }
-      });
-      return btn;
-    };
-    penidaToggle.addTo(map);
     </script>
 </body>
 </html>
