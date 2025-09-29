@@ -46,6 +46,7 @@
     const gAtracciones = L.layerGroup().addTo(map);
     const gCascadas = L.layerGroup().addTo(map);
     const gArrozales = L.layerGroup().addTo(map);
+    const gPenida = L.layerGroup().addTo(map);
 
     // Iconos de color
     function coloredMarker(color){
@@ -73,6 +74,7 @@
 
     // Puntos por categorías
     const poiStyle = { color:'#dc2626', fillColor:'#f87171', fillOpacity:.4, weight:2, radius:8 };
+    const poiAtracciones = { color:'#8b5cf6', fillColor:'#c4b5fd', fillOpacity:.45, weight:2, radius:8 };
     const playas = [
       { name:'Padang Padang Beach', lat:-8.8096, lng:115.1028, html:'<h4>Padang Padang</h4><div>Playa mítica de surf y baño.</div>' },
       { name:'Bingin Beach', lat:-8.8109, lng:115.1048, html:'<h4>Bingin</h4><div>Calas y escaleras entre acantilados.</div>' },
@@ -103,7 +105,7 @@
       // Lembongan / Ceningan
       { name:'Puente Amarillo (Lembongan–Ceningan)', lat:-8.6845, lng:115.4525, html:'<h4>Yellow Bridge</h4><div>Conexión Lembongan–Ceningan, buen punto para snorkel cercano.</div>' }
     ];
-    atraccionesExtras.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
+    atraccionesExtras.forEach(p=> L.circleMarker([p.lat,p.lng], poiAtracciones).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
 
     const cascadas = [{ name:'Tegenungan Waterfall', lat:-8.5815, lng:115.2892, html:'<h4>Tegenungan</h4><div>Cascada popular cerca de Ubud.</div>' },
       { name:'Nungnung Waterfall', lat:-8.3730, lng:115.2375, html:'<h4>Nungnung</h4><div>Cascada potente.</div>' },
@@ -115,7 +117,7 @@
     ];
 
     playas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gPlayas));
-    templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
+    templos.forEach(p=> L.circleMarker([p.lat,p.lng], poiAtracciones).bindPopup(p.html).bindTooltip(p.name).addTo(gAtracciones));
     cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).addTooltip?null:0);
     cascadas.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gCascadas));
     arrozales.forEach(p=> L.circleMarker([p.lat,p.lng], poiStyle).bindPopup(p.html).bindTooltip(p.name).addTo(gArrozales));
@@ -125,6 +127,7 @@
       'Zonas base': gZonas,
       'Playas': gPlayas,
       'Atracciones': gAtracciones,
+      'Nusa Penida': gPenida,
       'Cascadas': gCascadas,
       'Arrozales': gArrozales
     }, { collapsed:true }).addTo(map);
@@ -161,6 +164,25 @@
       }, 60);
     });
     ro.observe(document.documentElement);
-  </script>
+  
+    // Botón rápido para mostrar/ocultar Nusa Penida
+    const penidaToggle = L.control({ position:'topright' });
+    penidaToggle.onAdd = function(map){
+      const btn = L.DomUtil.create('button', 'leaflet-bar');
+      btn.title = 'Mostrar/Ocultar Nusa Penida';
+      btn.innerHTML = 'NP';
+      btn.style.padding = '6px 8px';
+      btn.style.cursor = 'pointer';
+      btn.style.background = 'white';
+      btn.style.border = '1px solid #ccc';
+      L.DomEvent.disableClickPropagation(btn);
+      L.DomEvent.on(btn, 'click', function(e){
+        L.DomEvent.stop(e);
+        if(map.hasLayer(gPenida)){ map.removeLayer(gPenida); } else { gPenida.addTo(map); }
+      });
+      return btn;
+    };
+    penidaToggle.addTo(map);
+    </script>
 </body>
 </html>
